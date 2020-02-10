@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: app-keptn-notification-
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: keptn-notification
+        image: appropriate/curl
+        command:
+          - "curl"
+          - "-X"
+          - "POST"
+          - "--data-urlencode"
+          - "payload={\"contenttype\": \"application/json\", \"data\": { \"deploymentstrategy\": \"direct\", \"image\": \"docker.io/keptnexamples/carts\", \"labels\": null, \"project\": \"sockshop2\", \"service\": \"carts\", \"stage\": \"dev\", \"tag\": \"0.10.3\", \"teststrategy\": \"functional\" }, \"id\": \"ea13e0a2-ccad-47ff-91fe-b31133bd336e\", \"source\": \"helm-service\", \"specversion\": \"0.2\", \"time\": \"2020-01-27T10:17:22.362Z\", \"type\": \"sh.keptn.events.deployment-finished\", \"shkeptncontext\": \"7160ac92-1176-4ea2-9357-dabd066994ae\" }"
+          - "https://webhook.site/911565d2-7432-4dc4-8493-3ccfbd2a1be2"
+      restartPolicy: Never
+  backoffLimit: 2
